@@ -20,14 +20,17 @@ def print_help():
     _PARSER.print_help()
 
 def handle(namespace):
-    '''handle parsed command line arguments'''
+    '''
+    handle parsed command line arguments, route call to correct subcommand
+    handler function
+    '''
     if namespace.subcommand is None:
         print_help()
     else:
         repository = vagrepo.repository.Repository(namespace.path)
         handle_list(namespace, repository)
 
-def handle_list(namespace, repository):
+def handle_list(_, repository):
     '''handle command line list subcommand'''
     for name in repository.box_names:
         print(name)
