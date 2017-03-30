@@ -1,6 +1,8 @@
 # vagrepo
 
-[![Travis](https://img.shields.io/travis/matthijsbos/vagrepo.svg)](https://travis-ci.org/matthijsbos/vagrepo)[![PyPI](https://img.shields.io/pypi/pyversions/vagrepo.svg)](https://pypi.python.org/pypi/vagrepo)
+[![Travis](https://img.shields.io/travis/matthijsbos/vagrepo.svg)](https://travis-ci.org/matthijsbos/vagrepo)
+[![PyPI](https://img.shields.io/pypi/pyversions/vagrepo.svg)](https://pypi.python.org/pypi/vagrepo)
+[![PyPI](https://img.shields.io/pypi/v/vagrepo.svg)](https://pypi.python.org/pypi/vagrepo)
 
 Local vagrant box repository manager.
 
