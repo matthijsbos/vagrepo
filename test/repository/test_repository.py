@@ -1,3 +1,4 @@
+import json
 import os.path
 import pathlib
 import tempfile
@@ -7,6 +8,7 @@ import pyfakefs
 from vagrepo.repository import Repository
 
 class RepositoryTestCase(pyfakefs.fake_filesystem_unittest.TestCase):
+    '''Tests for vagrepo.cli.repository.Repository class'''
 
     def setUp(self):
         self.setUpPyfakefs()
@@ -36,7 +38,6 @@ class RepositoryTestCase(pyfakefs.fake_filesystem_unittest.TestCase):
     def test_box_names(self):
         '''Test Repository class box_names property'''
         repo = Repository()
-        self.assertEqual(repo.boxes, [])
 
         user_1_box_1 = pathlib.Path(self.default_path, 'user_1', 'box_1')
         user_1_box_2 = pathlib.Path(self.default_path, 'user_1', 'box_2')
@@ -53,4 +54,24 @@ class RepositoryTestCase(pyfakefs.fake_filesystem_unittest.TestCase):
         self.assertIn('user_1/box_2', box_names)
         self.assertIn('anonymous_box', box_names)
 
+    def test_create(self):
+        '''Test Repository class create method'''
+        repo = Repository()
 
+        repo.create('ubuntu_16_04_x64')
+        metadata_path_1 = pathlib.Path(self.default_path, 'ubuntu_16_04_x64', 'metadata.json')
+        self.assertTrue(pathlib.Path(self.default_path, 'ubuntu_16_04_x64').is_dir())
+        self.assertTrue(metadata_path_1.is_file())
+        with metadata_path_1.open() as fp_1:
+            metadata_1 = json.load(fp_1)
+        self.assertDictEqual(metadata_1, {'name': 'ubuntu_16_04_x64', "versions": []})
+
+        repo.create('hello/world')
+        metadata_path_2 = pathlib.Path(self.default_path, 'hello', 'world', 'metadata.json')
+        self.assertTrue(pathlib.Path(self.default_path, 'hello', 'world').is_dir())
+        self.assertTrue(metadata_path_2.is_file())
+        with metadata_path_2.open() as fp_2:
+            metadata_2 = json.load(fp_2)
+        self.assertDictEqual(metadata_2, {'name': 'hello/world', "versions": []})
+
+        repo.create('BOX_NAME', 'BOX_DESCRIPTION')
