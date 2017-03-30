@@ -16,9 +16,11 @@ def parse_args():
     return _PARSER.parse_args()
 
 def print_help():
+    '''Print command line help message'''
     _PARSER.print_help()
 
 def handle(namespace):
+    '''handle parsed command line arguments'''
     if namespace.subcommand is None:
         print_help()
     else:
@@ -26,5 +28,6 @@ def handle(namespace):
         handle_list(namespace, repository)
 
 def handle_list(namespace, repository):
+    '''handle command line list subcommand'''
     for name in repository.box_names:
         print(name)
