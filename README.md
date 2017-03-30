@@ -1,4 +1,7 @@
 # vagrepo
+
+[![Build Status](https://travis-ci.org/matthijsbos/vagrepo.svg?branch=master)](https://travis-ci.org/matthijsbos/vagrepo)
+
 Local vagrant box repository manager
 
 ## Proposed interface
