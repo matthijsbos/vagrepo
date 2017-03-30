@@ -1,8 +1,11 @@
 # vagrepo
 
-[![Build Status](https://travis-ci.org/matthijsbos/vagrepo.svg?branch=master)](https://travis-ci.org/matthijsbos/vagrepo)
+[![Travis](https://img.shields.io/travis/matthijsbos/vagrepo.svg)](https://travis-ci.org/matthijsbos/vagrepo)[![PyPI](https://img.shields.io/pypi/pyversions/vagrepo.svg)](https://pypi.python.org/pypi/vagrepo)
 
-Local vagrant box repository manager
+Local vagrant box repository manager.
+
+## Installation
+`pip install vagrepo`
 
 ## Proposed interface
 ```
