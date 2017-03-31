@@ -45,4 +45,22 @@ class ParseArgsTestCase(unittest.TestCase):
             self.assertEqual(namespace.subcommand, 'create')
             self.assertEqual(namespace.path, '/some/path')
 
-        
+    def test_parse_add(self):
+        '''Test parsing of arguments for the add subcommand'''
+        test_args_1 = 'vagrepo add user/box some_file.box'.split()
+        with mock.patch('sys.argv', test_args_1):
+            namespace_1 = vagrepo.cli.parse_args()
+            self.assertEqual(namespace_1.subcommand, 'add')
+            self.assertEqual(namespace_1.path, None)
+            self.assertEqual(namespace_1.name, 'user/box')
+            self.assertEqual(namespace_1.file, 'some_file.box')
+            self.assertEqual(namespace_1.provider, None)
+
+        test_args_2 = 'vagrepo add user/box some_file.box --provider virtualbox'.split()
+        with mock.patch('sys.argv', test_args_2):
+            namespace_2 = vagrepo.cli.parse_args()
+            self.assertEqual(namespace_2.subcommand, 'add')
+            self.assertEqual(namespace_2.path, None)
+            self.assertEqual(namespace_2.name, 'user/box')
+            self.assertEqual(namespace_2.file, 'some_file.box')
+            self.assertEqual(namespace_2.provider, 'virtualbox')

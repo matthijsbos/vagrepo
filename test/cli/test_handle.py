@@ -15,48 +15,40 @@ class HandleTestCase(unittest.TestCase):
         mock_print_help.assert_called_with()
         self.assertFalse(mock_repo.called)
 
-    @mock.patch('vagrepo.cli.handle_list')
-    @mock.patch('vagrepo.repository.Repository')
-    def test_handle_list_subcommand(self, mock_repo, mock_list_handler):
-        mock_repo_inst = mock.Mock()
-        mock_repo.return_value = mock_repo_inst
-
-        mock_namespace = mock.Mock()
-        mock_namespace.subcommand = 'list'
-        mock_namespace.path = None
-
-        vagrepo.cli.handle(mock_namespace)
-        mock_repo.assert_called_with(None)
-        mock_list_handler.assert_called_with(mock_namespace, mock_repo_inst)
-
-    @mock.patch('vagrepo.cli.handle_list')
-    @mock.patch('vagrepo.repository.Repository')
-    def test_handle_list_subcommand_with_custom_path(self, mock_repo, mock_list_handler):
-        mock_repo_inst = mock.Mock()
-        mock_repo.return_value = mock_repo_inst
-
-        mock_path = mock.Mock()
-        mock_namespace = mock.Mock()
-        mock_namespace.subcommand = 'list'
-        mock_namespace.path = mock_path
-
-        vagrepo.cli.handle(mock_namespace)
-        mock_repo.assert_called_with(mock_path)
-        mock_list_handler.assert_called_with(mock_namespace, mock_repo_inst)
-
+    @mock.patch('vagrepo.cli.handle_add')
     @mock.patch('vagrepo.cli.handle_create')
+    @mock.patch('vagrepo.cli.handle_list')
     @mock.patch('vagrepo.repository.Repository')
-    def test_create_subcommand(self, mock_repo, mock_create_handler):
-        mock_repo_inst = mock.Mock()
-        mock_repo.return_value = mock_repo_inst
+    def test_handle_subcommands(self, mock_repo, mock_handle_list, 
+        mock_handle_create, mock_handle_add):
+        '''Test the proper transfer to a subcommand's corresponding handler'''
+        mapping = {
+            'list': mock_handle_list,
+            'create': mock_handle_create,
+            'add': mock_handle_add
+        }
+        # Test without custom path
+        for subcommand, mock_handler in mapping.items():
+            mock_repo_inst = mock.Mock()
+            mock_repo.return_value = mock_repo_inst
+            mock_namespace = mock.Mock()
+            mock_namespace.subcommand = subcommand
+            mock_namespace.path = None
 
-        mock_namespace = mock.Mock()
-        mock_namespace.subcommand = 'create'
-        mock_namespace.path = None
-        
-        vagrepo.cli.handle(mock_namespace)
-        mock_repo.assert_called_with(None)
-        mock_create_handler.assert_called_with(mock_namespace, mock_repo_inst)
-        
+            vagrepo.cli.handle(mock_namespace)
 
-        
+            mock_repo.assert_called_with(None)
+            mock_handler.assert_called_with(mock_namespace, mock_repo_inst)
+
+        # Test with a custom repository path set
+        for subcommand, mock_handler in mapping.items():
+            mock_repo_inst = mock.Mock()
+            mock_repo.return_value = mock_repo_inst
+            mock_namespace = mock.Mock()
+            mock_namespace.subcommand = subcommand
+
+            vagrepo.cli.handle(mock_namespace)
+
+            mock_repo.assert_called_with(mock_namespace.path)
+            mock_handler.assert_called_with(mock_namespace, mock_repo_inst)
+

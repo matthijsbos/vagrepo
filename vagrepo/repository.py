@@ -2,6 +2,7 @@ import json
 import os
 import os.path
 import pathlib
+import shutil
 
 class Repository:
 
@@ -35,13 +36,31 @@ class Repository:
         with metadata_path.open('w') as f:
             json.dump({'name': name, 'versions': []}, f)
 
-#     @property
-#     def boxes(self):
-#         pattern = '**/%s' % METADATA_FN
-#         matches = pathlib.Path(self.path).glob(pattern)
-#         return [Box(str(m)) for m in matches]
+    def add(self, name, file, version, provider):
+        '''Add a box file to an existing box'''
+        file_src_path = pathlib.Path(file)
+        name_parts = name.split('/')
+        box_dir = pathlib.Path(self.path, *name_parts)
+        meta_path = pathlib.Path(box_dir, Repository.METADATA_FN)
+        file_dest_dir = pathlib.Path(box_dir, version)
+        file_dest_path = pathlib.Path(file_dest_dir, '%s.box' % provider)
+        file_dest_dir.mkdir(parents=True)
+        shutil.copy(str(file_src_path), str(file_dest_path))
 
-# class Box:
-#     def __init__(self, path):
-#         self.path = path
+        with meta_path.open() as meta_fp:
+            meta_json = json.load(meta_fp)
 
+        meta_json['versions'].append({
+            "version": version,
+            "providers": [
+                {
+                    "name": provider,
+                    "url": file_dest_path.as_uri(),
+                    "checksum_type": "sha1",
+                    "checksum": "HASH"
+                }
+            ]
+        })
+
+        with meta_path.open('w') as meta_fp:
+            json.dump(meta_json, meta_fp)
