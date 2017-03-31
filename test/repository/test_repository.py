@@ -80,6 +80,15 @@ class RepositoryTestCase(pyfakefs.fake_filesystem_unittest.TestCase):
 
         repo.create('BOX_NAME', 'BOX_DESCRIPTION')
 
+    def test_create_raises(self):
+        repo = Repository()
+
+        repo.create('some/repo')
+        repo.create('some/other_repo')
+
+        with self.assertRaises(ValueError):
+            repo.create('some/repo')
+
     @mock.patch('hashlib.sha1')
     def test_add(self, mock_sha1):
         '''Test Repository class add method'''

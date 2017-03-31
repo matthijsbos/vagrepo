@@ -32,7 +32,12 @@ class Repository:
         name_parts = name.split('/')
         box_dir = pathlib.Path(self.path, *name_parts)
         metadata_path = pathlib.Path(box_dir, Repository.METADATA_FN)
-        box_dir.mkdir(parents=True)
+
+        try:
+            box_dir.mkdir(parents=True)
+        except FileExistsError as err:
+            raise ValueError('box %s already exists' % name) from err
+
         with metadata_path.open('w') as f:
             json.dump({'name': name, 'versions': []}, f)
 
