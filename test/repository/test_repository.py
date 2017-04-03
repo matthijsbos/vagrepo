@@ -43,8 +43,8 @@ class RepositoryTestCase(pyfakefs.fake_filesystem_unittest.TestCase):
         '''Test Repository class box_names property'''
         repo = Repository()
 
-        user_1_box_1 = pathlib.Path(self.default_path, 'user_1', 'box_1')
-        user_1_box_2 = pathlib.Path(self.default_path, 'user_1', 'box_2')
+        user_1_box_1 = pathlib.Path(self.default_path, 'user_1-VAGRANTSLASH-box_1')
+        user_1_box_2 = pathlib.Path(self.default_path, 'user_1-VAGRANTSLASH-box_2')
         anonymous_box = pathlib.Path(self.default_path, 'anonymous_box')
 
         for path in [user_1_box_1, user_1_box_2, anonymous_box]:
@@ -71,8 +71,8 @@ class RepositoryTestCase(pyfakefs.fake_filesystem_unittest.TestCase):
         self.assertDictEqual(metadata_1, {'name': 'ubuntu_16_04_x64', "versions": []})
 
         repo.create('hello/world')
-        metadata_path_2 = pathlib.Path(self.default_path, 'hello', 'world', 'metadata.json')
-        self.assertTrue(pathlib.Path(self.default_path, 'hello', 'world').is_dir())
+        metadata_path_2 = pathlib.Path(self.default_path, 'hello-VAGRANTSLASH-world', 'metadata.json')
+        self.assertTrue(pathlib.Path(self.default_path, 'hello-VAGRANTSLASH-world').is_dir())
         self.assertTrue(metadata_path_2.is_file())
         with metadata_path_2.open() as fp_2:
             metadata_2 = json.load(fp_2)
@@ -97,7 +97,7 @@ class RepositoryTestCase(pyfakefs.fake_filesystem_unittest.TestCase):
         mock_sha1_inst.hexdigest.return_value = 'HASH'
         mock_sha1.return_value = mock_sha1_inst
 
-        box_dir = pathlib.Path(self.default_path, 'some', 'box')
+        box_dir = pathlib.Path(self.default_path, 'some-VAGRANTSLASH-box')
         box_meta_path = pathlib.Path(box_dir, 'metadata.json')
         box_meta_json = {
             "name": "some/box",
